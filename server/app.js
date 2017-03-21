@@ -2,12 +2,16 @@ var express = require('express');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var cors = require('cors')
 var index = require('./routes/index');
 var api = require('./routes/api');
-
+var mongoose = require('mongoose')
 var app = express();
-
+mongoose.connect('mongodb://localhost/houses', function (err) {
+  if (err) throw err
+  console.log('database connected using mongoose')
+})
+app.use(cors())
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
