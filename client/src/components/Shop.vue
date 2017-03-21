@@ -7,19 +7,29 @@
     <el-row :gutter="20">
         <el-col :span="16">
             <el-row :gutter="20">
-                <el-col :span="8" v-for="item in items" :offset="index > 0 ? 2 : 0">
+                <el-col :span="12" v-for="house in houses" :offset="index > 0 ? 2 : 0">
                     <el-card :body-style="{ padding: '0px' }">
-                        <img :src="item.pictlink" class="image">
+                        <img :src="house.pictlink" class="image">
                         <div style="padding: 14px;">
-                            <h3>{{ item.name }}</h3>
+                            <h3>{{ house.title }}</h3>
                             <div class="bottom clearfix">
                                 <p>
-                                    {{ item.description }}
+                                    {{ house.description }}
                                 </p>
-                                <h3>{{toRupiah(item.price )}}</h3>
-                                <el-button type="primary" class="button" @click.native="addToCart(item)">Add to cart</el-button>
+                                <h3>{{toRupiah(house.price )}}</h3>
+                                <el-button type="primary" class="button" @click.native="addToCart(house)">Add to cart</el-button>
                             </div>
                         </div>
+                        <el-collapse @change="handleChangeCollapse">
+  <el-collapse-item title="Open Maps" name="1">
+    <div>Consistent with real life: in line with the process and logic of real life, and comply with languages and habits that the users are used to;</div>
+    <div>Consistent within interface: all elements should be consistent, such as: design style, icons and texts, position of elements, etc.</div>
+  </el-collapse-item>
+  <el-collapse-item title="Contact" name="2">
+    <div>{{ house.contact }}</div>
+  </el-collapse-item>
+
+</el-collapse>
                     </el-card>
                 </el-col>
             </el-row>
@@ -55,16 +65,15 @@ let host = 'http://localhost:3000/api';
 export default {
     data() {
         return {
-            items: [],
+            houses: [],
             cart: [],
-            local: localStorage.getItem('storedData')
+            local: localStorage.getItem('storedData'),
         }
     },
     created() {
         console.log('run');
         this.getItems()
-        this.cart = JSON.parse(this.$localStorage.get('cart'))
-        console.log(this.cart);
+        this.cart = JSON.parse(this.$localStorage.get('cart')) || []
     },
     computed: {
       total: function(){
@@ -74,10 +83,10 @@ export default {
     methods: {
         getItems() {
             let self = this;
-            axios.get(host + '/items')
+            axios.get(host + '/houses')
                 .then(response => {
                     // JSON responses are automatically parsed.
-                    self.items = response.data
+                    self.houses = response.data
                 })
                 .catch(e => {
                     console.log(e);
