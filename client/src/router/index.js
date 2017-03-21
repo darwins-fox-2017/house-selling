@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Hello from '@/components/Hello'
 import Detail from '@/components/Detail'
-import Register from '@/components/register'
+import Register from '@/components/Register'
+import Edit from '@/components/Edit'
 
 Vue.use(Router)
 
@@ -21,6 +22,11 @@ export default new Router({
       path: '/register',
       name: 'Register',
       component: Register
+    },{
+      path: '/edit/:slug',
+      name: 'Edit',
+      props: true,
+      component: Edit
     }
   ]
 })

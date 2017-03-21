@@ -36,7 +36,16 @@ House.newHouse = (req, res, next) => {
 }
 
 House.updateHouse = (req, res, next) => {
-  Model.update({slug: req.params.slug}).then((house) => {
+  Model.update({slug: req.params.slug}, {$set: {
+    title: req.body.title,
+    image: req.body.image,
+    spesification: req.body.spesification,
+    price: req.body.price,
+    address: req.body.address,
+    latitude: req.body.latitude,
+    longitude: req.body.longitude,
+    slug: Slug(req.body.title).toLowerCase()
+  }}).then((house) => {
     res.send(house)
   }).catch((err) => {
     res.send(err)

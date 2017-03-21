@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <house v-for="house in houses" v-bind:house="house" @delete="deleteData(house.slug)"></house>
+    <house v-for="house in houses" v-bind:house="house" @delete="deleteData(house.slug)" @edit="editData(house.slug)"></house>
   </div>
 </template>
 
@@ -33,6 +33,9 @@ export default {
       axios.delete('http://localhost:3000/api/house/' + slug).then((response) => {
         self.houses.splice(houseIndex, 1)
       })
+    },
+    editData(slug) {
+      window.location = 'http://localhost:8080/#/edit/'+ slug
     }
   },
   mounted() {

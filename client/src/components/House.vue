@@ -4,7 +4,7 @@
     <div>Tanggal Posting : {{ house.createdAt }}</div>
     <div>Spesifikasi : {{ house.spesification }}</div>
     <div>Harga : ${{ house.price }}</div>
-    <div><button>Edit</button> | <button @click="onDelete(house.slug)">Delete</button></div>
+    <div><button @click="onEdit(house.slug)">Edit</button> | <button @click="onDelete(house.slug)">Delete</button></div>
     <div>Gambar <br><img v-bind:src="house.image"></div>
   </div>
 </template>
@@ -15,6 +15,9 @@ export default {
   methods: {
     onDelete(slug) {
       this.$emit('delete', slug)
+    },
+    onEdit(slug) {
+      this.$emit('edit', slug)
     }
   }
 }
