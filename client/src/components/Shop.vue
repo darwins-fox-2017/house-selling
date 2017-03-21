@@ -17,19 +17,21 @@
                                     {{ house.description }}
                                 </p>
                                 <h3>{{toRupiah(house.price )}}</h3>
-                                <el-button type="primary" class="button" @click.native="addToCart(house)">Add to cart</el-button>
+                                <el-button type="" class="button" @click.native="addToCart(house)">Compare it</el-button>
+                                <el-button type="primary" class="button" @click.native="viewDetail(house._id)">View detail</el-button>
                             </div>
                         </div>
-                        <el-collapse @change="handleChangeCollapse">
-  <el-collapse-item title="Open Maps" name="1">
-    <div>Consistent with real life: in line with the process and logic of real life, and comply with languages and habits that the users are used to;</div>
-    <div>Consistent within interface: all elements should be consistent, such as: design style, icons and texts, position of elements, etc.</div>
-  </el-collapse-item>
-  <el-collapse-item title="Contact" name="2">
-    <div>{{ house.contact }}</div>
-  </el-collapse-item>
+                        <el-collapse>
+                            <el-collapse-item title="Address" name="1">
+                                <div>
+                                  {{ house.address }}
+                                </div>
+                            </el-collapse-item>
+                            <el-collapse-item title="Contact" name="2">
+                                <div>{{ house.contact }}</div>
+                            </el-collapse-item>
 
-</el-collapse>
+                        </el-collapse>
                     </el-card>
                 </el-col>
             </el-row>
@@ -41,16 +43,24 @@
                     <el-button style="float: right;" type="primary">Purchase now</el-button>
                 </div>
                 <div v-for="item in cart" class="text item">
-                      {{ item.product_name }} [ X {{ item.quantity }}
-                      ]<span class="right">{{ toRupiah(item.subtotal) }}
+                    {{ item.product_name }} [ X {{ item.quantity }} ]
+                    <span class="right">{{ toRupiah(item.subtotal) }}
                         <el-button size="mini" icon="delete" type="danger" @click.native="deleteFromCart(item.product_id)"></el-button>
                       </span>
                 </div>
                 <div class="">
-                  <span class="total title">Total</span> <span class="total right">{{ total }}</span>
+                    <span class="total title">Total</span> <span class="total right">{{ total }}</span>
                 </div>
             </el-card>
         </el-col>
+        <map :center="center" :zoom="7">
+        <marker
+          v-for="m in markers"
+          :position.sync="m.position"
+          :clickable="true"
+          :draggable="true"
+          @g-click="center=m.position"></marker>
+      </map>
     </el-row>
 
 </div>
@@ -68,6 +78,21 @@ export default {
             houses: [],
             cart: [],
             local: localStorage.getItem('storedData'),
+            center: {
+                lat: 10.0,
+                lng: 10.0
+            },
+            markers: [{
+                position: {
+                    lat: 10.0,
+                    lng: 10.0
+                }
+            }, {
+                position: {
+                    lat: 11.0,
+                    lng: 11.0
+                }
+            }]
         }
     },
     created() {
@@ -76,9 +101,9 @@ export default {
         this.cart = JSON.parse(this.$localStorage.get('cart')) || []
     },
     computed: {
-      total: function(){
-        return rupiah.convert(_.sumBy(this.cart, 'subtotal'))
-      }
+        total: function() {
+            return rupiah.convert(_.sumBy(this.cart, 'subtotal'))
+        }
     },
     methods: {
         getItems() {
@@ -91,66 +116,51 @@ export default {
                 .catch(e => {
                     console.log(e);
                 })
-
-
         },
-        toRupiah(price){
-          return rupiah.convert(price)
-        },
-        addToCart(item){
-          let newItem = item
-          let indexAlready = _.findIndex(this.cart, ['product_id', item.id])
-          if (indexAlready == -1) {
-            let cartItem = {
-              product_id: item.id,
-              product_name: item.name,
-              quantity: 1,
-              price: item.price,
-              subtotal: parseInt(item.price)
-            }
-            this.cart.push(cartItem)
-          } else {
-            let cartItem = this.cart[indexAlready]
-            cartItem.quantity = cartItem.quantity + 1
-            cartItem.subtotal =cartItem.price * cartItem.quantity
-          }
-           this.$localStorage.set('cart', JSON.stringify(this.cart))
-        },
-        deleteFromCart(product_id){
-          let indexAlready = _.findIndex(this.cart, ['product_id', product_id])
-          this.cart.splice(indexAlready, 1)
-
+        toRupiah(price) {
+            return rupiah.convert(price)
         },
         formatter(row, column) {
             return row.address;
+        },
+        viewDetail(id){
+          this.$router.push('/houses/' + id)
+        },
+        getItem(){
+          let self = this
+          axios.get(host + '/houses/' + self.$route.params.id).then(item => {
+            self.form = item.data
+          })
         }
     }
 }
 </script>
 
 <style>
-.el-col  {
-  margin-bottom: 20px;
+.el-col {
+    margin-bottom: 20px;
 }
+
 .image {
     width: 100%;
     display: block;
 }
+
 .text {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 .item {
-  padding: 10px 0;
+    padding: 10px 0;
 }
 
 .total {
-  font-size: 18px;
-  font-weight: bold;
+    font-size: 18px;
+    font-weight: bold;
 }
 
 .right {
-  float: right;
+    float: right;
 }
 
 .clearfix:before,

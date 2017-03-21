@@ -2,7 +2,7 @@
 <div id="app">
 
     <el-menu  :default-active="activeIndex2" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-        <el-menu-item index="1">Buah Tangan Dashboard</el-menu-item>
+        <el-menu-item index="1">House Selling</el-menu-item>
         <el-submenu index="2">
             <template slot="title">House
             </template>
