@@ -3,12 +3,14 @@
     <el-button type="primary" @click.native="addItem">Add item</el-button>
     <br/>
     <br/>
-    <el-table :data="items" :default-sort="{prop: 'title', order: 'descending'}" style="width: 100%">
+    <el-table :data="houses" :default-sort="{prop: 'title', order: 'descending'}" style="width: 100%">
         <el-table-column prop="title" label="Title" sortable width="180">
         </el-table-column>
         <el-table-column prop="price" label="Price" width="180">
         </el-table-column>
         <el-table-column prop="description" label="Description">
+        </el-table-column>
+        <el-table-column prop="address" label="Address">
         </el-table-column>
         <el-table-column label="Operations">
             <template scope="scope">
@@ -33,7 +35,7 @@ let host = 'http://localhost:3000/api';
 export default {
     data() {
         return {
-            items: []
+            houses: []
         }
     },
     created() {
@@ -48,7 +50,7 @@ export default {
                 .then(response => {
                     // JSON responses are automatically parsed.
                     console.log('response:', response.data);
-                    self.items = response.data
+                    self.houses = response.data
                 })
                 .catch(e => {
                     console.log(e);
@@ -58,9 +60,9 @@ export default {
             this.$router.push('/houses/new')
         },
         handleDelete(index, row) {
-            this.items.slice(index, 1)
+            this.houses.slice(index, 1)
             let self = this
-            axios.delete(host + '/items/' + row.id).then(response => {
+            axios.delete(host + '/houses/' + row._id).then(response => {
                 console.log(response);
                 if (response.status) {
                     self.getItems()
@@ -74,7 +76,7 @@ export default {
             })
         },
         handleEdit(index, row) {
-            this.$router.push('/houses/' + row.id + '/edit')
+            this.$router.push('/houses/' + row._id + '/edit')
         },
         formatter(row, column) {
             return row.address;
