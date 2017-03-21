@@ -22,7 +22,7 @@ House selling is e-commerce for real estate.
 
 ## House
 
-    **Route**   |  **HTTP**  |              **Description**
+ **Route**  | **HTTP**  |     **Description**
 ----------------|------------|------------------------------------------
 | /house        | GET        | Get all data house
 | /house/:id    | GET        | Get one data house
